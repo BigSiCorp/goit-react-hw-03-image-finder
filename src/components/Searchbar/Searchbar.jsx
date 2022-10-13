@@ -10,15 +10,13 @@ export class Searchbar extends Component {
 
 
   handleSubmit = event => {
-    console.dir(this.state.searchQuery);
     event.preventDefault();
     
     if (this.state.searchQuery.trim() === '') {
-        console.dir(this.state.searchQuery)
       alert('Введите имя покемона.');
       return;
     }
-
+    
     this.props.onSubmit(this.state.searchQuery);
     this.setState({ searchQuery: '' });
   };

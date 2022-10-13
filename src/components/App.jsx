@@ -1,5 +1,7 @@
 import { Component } from "react";
 import { Searchbar } from "./Searchbar/Searchbar";
+import { Gallery } from './ImageGallery/ImageGallery'
+
 export class App extends Component {
   state = {
     searchQuery: '',
@@ -20,7 +22,8 @@ render(){
         color: '#010101'
       }}
     >
-      <Searchbar onSubmit = {this.handleFormSubmit}/>
+      <Searchbar onSubmit={this.handleFormSubmit} />
+      <Gallery searchQuery={ this.state.searchQuery} />
     </div>
   );
 }};
