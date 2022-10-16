@@ -1,29 +1,37 @@
-import { Component } from "react";
-import { Searchbar } from "./Searchbar/Searchbar";
-import { Gallery } from './ImageGallery/ImageGallery'
+import { Component } from 'react';
+import { Searchbar } from './Searchbar/Searchbar';
+import { Gallery } from './ImageGallery/ImageGallery';
 
 export class App extends Component {
   state = {
     searchQuery: '',
+    gallery: [],
+    isLoading: false,
+    error: null,
   };
-  
+
   handleFormSubmit = searchQuery => {
     this.setState({ searchQuery });
   };
-render(){
-  return (
-    <div
-      style={{
-        height: '100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        fontSize: 40,
-        color: '#010101'
-      }}
-    >
-      <Searchbar onSubmit={this.handleFormSubmit} />
-      <Gallery searchQuery={ this.state.searchQuery} />
-    </div>
-  );
-}};
+  stateUpdate = (gallery, isLoading, error) => {
+    console.log(gallery);
+    this.setState({ gallery, isLoading, error });
+  };
+  render() {
+    // console.log(this.state.gallery);
+    return (
+      <>
+        <Searchbar
+          onSubmit={this.handleFormSubmit}
+          gallery={this.state.gallery}
+          isLoading={this.state.isLoading}
+          error={this.state.error}
+        />
+        <Gallery
+          searchQuery={this.state.searchQuery}
+          onUpdate={this.stateUpdate}
+        />
+      </>
+    );
+  }
+}
