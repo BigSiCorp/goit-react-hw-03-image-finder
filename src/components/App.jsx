@@ -14,11 +14,10 @@ export class App extends Component {
     this.setState({ searchQuery });
   };
   stateUpdate = (gallery, isLoading, error) => {
-    console.log(gallery);
-    this.setState({ gallery, isLoading, error });
+    this.setState(() => ({ gallery, isLoading, error }));
   };
   render() {
-    // console.log(this.state.gallery);
+   
     return (
       <>
         <Searchbar

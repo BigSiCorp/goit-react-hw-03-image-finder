@@ -1,10 +1,10 @@
 import { Component } from 'react';
+import PropTypes from 'prop-types';
 import { axiosPicture } from '../../Services/picture-api';
 import { GalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
 import { ButtonPagination } from 'components/Button/Button';
 import { Modal } from '../Modal/Modal';
 import ThreeDots from '../Loader/Loader';
-// import {Note} from './Notification';
 import s from './ImageGallery.module.css';
 
 export class Gallery extends Component {
@@ -16,25 +16,31 @@ export class Gallery extends Component {
     currentImage: null,
   };
 
+  static propTypes = { 
+    searchQuery: PropTypes.string.isRequired,
+    onUpdate: PropTypes.func.isRequired}
+
   async componentDidUpdate(prevProps, prevState) {
     const prevQuery = prevProps.searchQuery;
     const nextQuery = this.props.searchQuery;
     const prevPage = prevState.page;
     const nextPage = this.state.page;
 
-    if (prevQuery !== nextQuery) {
+     if (prevQuery !== nextQuery) {
       try {
         this.setState({ isLoading: true, page: 1 });
         const pictureData = await axiosPicture(nextQuery);
         this.setState({ gallery: pictureData });
-       this.props.onUpdate(pictureData, this.state.isLoading, this.state.error);
+        this.props.onUpdate(
+          pictureData,
+          this.state.isLoading,
+          this.state.error
+        );
+      
       } catch (err) {
         this.setState({ error: err.message });
-        console.log(this.state.error);
-        console.log(err.message);
       } finally {
         this.setState({ isLoading: false });
-        
       }
     }
     if (prevPage !== nextPage && nextPage !== 1) {
@@ -43,23 +49,24 @@ export class Gallery extends Component {
         const pictureData = await axiosPicture(
           this.props.searchQuery,
           this.state.page
-         
         );
-
+     
         this.setState(({ gallery }) => ({
           gallery: [...gallery, ...pictureData],
         }));
-        this.props.onUpdate(pictureData, this.state.isLoading, this.state.error);
+        this.props.onUpdate(
+          pictureData,
+          this.state.isLoading,
+          this.state.error
+        );
       } catch (err) {
         this.setState({ error: err.message });
       } finally {
         this.setState({ isLoading: false });
-        
       }
-    }   
+    }
   }
-
-  pagination = (e) => {
+   pagination = e => {
     e.preventDefault();
     this.setState(prevState => ({ page: prevState.page + 1 }));
   };
@@ -74,8 +81,9 @@ export class Gallery extends Component {
 
     return (
       <>
-      {/* {!isLoading && !error && gallery.length<1 && <Note/>} */}
-       {error && <span className={s.error}>Oops! Something went wrong. {error}</span>}
+        {error && (
+          <span className={s.error}>Oops! Something went wrong. {error}</span>
+        )}
         <ul className={s.gallery}>
           {!!gallery.length && (
             <GalleryItem
@@ -86,10 +94,10 @@ export class Gallery extends Component {
         </ul>
         {isLoading && <ThreeDots />}
         {!!gallery.length &&
-          gallery.length >= page * 12 /* && <ThreeDots />  */ && (
+          gallery.length >= page * 12 && (
             <ButtonPagination pagination={this.pagination} />
           )}
-        
+
         {currentImage && (
           <Modal image={currentImage} closeModal={this.closeModal} />
         )}
@@ -97,3 +105,5 @@ export class Gallery extends Component {
     );
   }
 }
+
+

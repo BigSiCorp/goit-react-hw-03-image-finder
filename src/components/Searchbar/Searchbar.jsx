@@ -1,14 +1,20 @@
 import React from 'react';
 import { Component } from 'react';
+import PropTypes from 'prop-types';
 import { BsSearch } from 'react-icons/bs';
-// import { Note } from '../ImageGallery/Notification';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import s from './Searchbar.module.css';
+
 export class Searchbar extends Component {
   state = {
     searchQuery: '',
   };
+
+  static propTypes = { gallery: PropTypes.array.isRequired,
+    isLoading: PropTypes.bool.isRequired,
+    error: PropTypes.string,
+    onSubmit: PropTypes.func.isRequired,}
 
   handleNameChange = event => {
     this.setState({ searchQuery: event.currentTarget.value.toLowerCase() });
@@ -18,7 +24,6 @@ export class Searchbar extends Component {
     event.preventDefault();
 
     if (this.state.searchQuery.trim() === '') {
-      // const notify = () => toast("Did not find anything! Please change the request.");
       return;
     }
 
@@ -26,20 +31,20 @@ export class Searchbar extends Component {
     this.setState({ searchQuery: '' });
   };
 
-  notify = () => toast("Did not find anything! Please change the request.")
+  notify = () => {
+    if (this.props.gallery.length < 1) {
+      toast.warn('Did not find anything! Please change the request.');
+    }
+  }
+    
 
   render() {
-
-    console.log(this.props);
-      return (
-      
+    return (
       <header className="searchbar">
         <form className={s.form} onSubmit={this.handleSubmit}>
           <button type="submit" className={s.submit} onClick={this.notify}>
-            {/* <span className="button-label">Search</span> */}
-            <BsSearch />
+          <BsSearch />
           </button>
-
           <input
             className={s.input}
             type="text"
@@ -50,8 +55,8 @@ export class Searchbar extends Component {
             value={this.state.searchQuery}
           />
         </form>
-        
-          {!this.props.error && this.props.gallery.length < 1 && <ToastContainer />}
+        {this.props.isLoading && !this.props.error && this.props.gallery.length < 1 && <ToastContainer />
+        }
       </header>
     );
   }
